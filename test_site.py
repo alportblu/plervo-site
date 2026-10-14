@@ -24,10 +24,10 @@ class Links(HTMLParser):
 
 class SiteTests(unittest.TestCase):
     def test_payment_links_reject_other_hosts_and_unsafe_urls(self):
-        self.assertEqual(checked_url("https://www.buymeacoffee.com/example", "www.buymeacoffee.com"), "https://www.buymeacoffee.com/example")
-        for url in ("http://www.buymeacoffee.com/example", "https://www.buymeacoffee.com.evil/a", "https://evil@www.buymeacoffee.com/a", "https://www.buymeacoffee.com/a?next=evil", "javascript:alert(1)", "https://www.buymeacoffee.com/a\nb"):
+        self.assertEqual(checked_url("https://buymeacoffee.com/alport", "buymeacoffee.com"), "https://buymeacoffee.com/alport")
+        for url in ("http://buymeacoffee.com/alport", "https://buymeacoffee.com.evil/a", "https://evil@buymeacoffee.com/a", "https://buymeacoffee.com/a?next=evil", "javascript:alert(1)", "https://buymeacoffee.com/a\nb"):
             with self.assertRaises(ValueError):
-                checked_url(url, "www.buymeacoffee.com")
+                checked_url(url, "buymeacoffee.com")
 
     def test_generated_pages_have_no_broken_local_links_or_scripts(self):
         main()
@@ -49,8 +49,12 @@ class SiteTests(unittest.TestCase):
                     target_parser.feed(target.read_text())
                     self.assertIn(parsed.fragment, target_parser.ids)
         config = json.loads((ROOT / "config.json").read_text())
-        if not config["buy_me_a_coffee_url"]:
-            self.assertNotIn('href="https://www.buymeacoffee.com/', (ROOT / "dist/apoiar/index.html").read_text())
+        support = (ROOT / "dist/apoiar/index.html").read_text()
+        if config["buy_me_a_coffee_url"]:
+            self.assertIn(f'href="{config["buy_me_a_coffee_url"]}"', support)
+            self.assertNotIn("Nosso café ainda está passando", support)
+        else:
+            self.assertNotIn('href="https://buymeacoffee.com/', support)
 
 
 if __name__ == "__main__":
