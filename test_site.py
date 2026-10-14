@@ -12,11 +12,12 @@ class Links(HTMLParser):
         super().__init__()
         self.links = []
         self.ids = set()
-        self.scripts = 0
+        self.scripts = []
 
     def handle_starttag(self, tag, attrs):
         attrs = dict(attrs)
-        self.scripts += tag == "script"
+        if tag == "script":
+            self.scripts.append(attrs)
         if "id" in attrs:
             self.ids.add(attrs["id"])
         self.links.extend(attrs[k] for k in ("href", "src") if k in attrs)
@@ -29,12 +30,13 @@ class SiteTests(unittest.TestCase):
             with self.assertRaises(ValueError):
                 checked_url(url, "buymeacoffee.com")
 
-    def test_generated_pages_have_no_broken_local_links_or_scripts(self):
+    def test_generated_pages_have_no_broken_links_or_external_scripts(self):
         main()
         for page in (ROOT / "dist").rglob("*.html"):
             parser = Links()
             parser.feed(page.read_text())
-            self.assertEqual(parser.scripts, 0, page)
+            expected = [{"type": "module", "src": "/assets/downloads.mjs"}] if page == ROOT / "dist/index.html" else []
+            self.assertEqual(parser.scripts, expected, page)
             for link in parser.links:
                 parsed = urlsplit(link)
                 if parsed.scheme or parsed.netloc:

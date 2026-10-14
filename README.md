@@ -1,10 +1,11 @@
 # Plervo — site
 
-Site estático independente: HTML/CSS, sem JavaScript no navegador, analytics, cookies ou widgets externos.
+Site estático independente: HTML/CSS e um módulo local que sugere o sistema do download. Sem analytics, cookies ou widgets externos. A sugestão usa informações básicas já expostas pelo navegador, não as transmite e não inicia downloads automaticamente. As três opções permanecem disponíveis; celulares e tablets recebem uma indicação de que o app é para computadores.
 
 ```sh
 python3 build.py
 python3 -m unittest -v
+node --test tests/downloads.test.mjs
 python3 -m http.server 4173 --bind 127.0.0.1 --directory dist
 ```
 
