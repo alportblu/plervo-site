@@ -9,7 +9,7 @@ node --test tests/downloads.test.mjs
 python3 -m http.server 4173 --bind 127.0.0.1 --directory dist
 ```
 
-Publicação prevista: Cloudflare Pages Free. Na Cloudflare, conectar o repositório com comando `python3 build.py` e diretório de saída `dist`, ou usar Direct Upload com esse diretório. O domínio permanece registrado na GoDaddy. Associar `plervo.com` e `www.plervo.com` somente depois de validar a implantação.
+Publicado na Cloudflare Pages Free em https://plervo-site.pages.dev, usando Direct Upload do diretório `dist`. O domínio permanece registrado na GoDaddy; os nameservers já foram configurados para a Cloudflare, e a ativação do domínio próprio está em andamento. O workflow `Plervo site checks` verifica a geração, os links, a proteção dos downloads e a sugestão de sistema em cada push e pull request.
 
 `config.json` controla os links públicos. O apoio está configurado para `https://buymeacoffee.com/alport`, fornecido pelo proprietário e conferido no Chrome oficial em 14 de outubro de 2026: Ricardo Bonetti, criador do Plervo. A página `/apoiar/` abre o serviço somente quando o visitante escolhe o link. Downloads permanecem vazios até que cada pacote seja assinado quando aplicável, validado no sistema correspondente e publicado na release oficial. Nunca usar links de exemplo no ambiente público.
 
