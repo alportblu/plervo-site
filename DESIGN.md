@@ -9,3 +9,5 @@ Composition: type-led hero, real Suite screenshot, numbered installation flow, o
 Suite screenshot: original Plervo UI rendered with Inter and egui's open fonts, without system fonts or personal documents. Capture is generated from the app, not a design mockup. Download configuration is updated only after signed artifacts pass validation.
 
 Deployment: the build gives CSS, JavaScript, the brand mark and the Suite preview content-based filenames. Returning visitors receive matching HTML and assets even when the browser retains a previous release's files.
+
+Responses use `no-transform` to prevent proxy-injected analytics, with cache revalidation to keep the published HTML current. The final custom-domain HTML must match the built file. This follows [Cloudflare's documented opt-out from beacon injection](https://developers.cloudflare.com/web-analytics/get-started/); the restrictive CSP stays in place.
