@@ -120,15 +120,18 @@ class SiteTests(unittest.TestCase):
 
     def test_downloads_match_verified_package_in_each_language(self):
         config = json.loads((ROOT / "config.json").read_text())
-        release = config["downloads"][0]
-        self.assertEqual(release["platform"], "macos")
-        filename = urlsplit(release["url"]).path.rsplit("/", 1)[-1]
-        self.assertTrue(filename.startswith("plervo-suite-"))
-        self.assertEqual((ROOT / "dist/plervo-suite-macos.sha256").read_text(), release["sha256"] + "  " + filename + "\n")
+        for platform, releases in checked_downloads(config["downloads"]).items():
+            checksums = ""
+            for release in releases:
+                filename = urlsplit(release["url"]).path.rsplit("/", 1)[-1]
+                self.assertTrue(filename.startswith("plervo-suite-"))
+                checksums += release["sha256"] + "  " + filename + "\n"
+            self.assertEqual((ROOT / "dist" / f"plervo-suite-{platform}.sha256").read_text(), checksums)
         for language, strings in load_locales().items():
             parser = Links()
             parser.feed((ROOT / "dist" / route(language, "home").lstrip("/") / "index.html").read_text())
-            self.assertEqual([link for link in parser.links if "/releases/download/" in link], [release["url"]])
+            self.assertCountEqual([link for link in parser.links if "/releases/download/" in link],
+                                  [release["url"] for release in config["downloads"]])
             device = next(attrs for _, attrs in parser.elements if attrs.get("id") == "device-note")
             self.assertEqual(device["data-desktop"], strings["DEVICE_DESKTOP"])
             self.assertEqual(device["data-mobile"], strings["DEVICE_MOBILE"])
@@ -148,6 +151,21 @@ class SiteTests(unittest.TestCase):
                 checked_downloads([dict(release, **patch)])
         with self.assertRaises(ValueError):
             checked_downloads([release, release])
+
+    def test_linux_formats_are_each_validated_and_cannot_hide_a_bad_alternative(self):
+        def linux(format):
+            return {"platform": "linux", "version": "0.1.0-alpha.3", "validated": True,
+                    "sha256": "a" * 64,
+                    "url": "https://github.com/alportblu/plervo-pdf/releases/download/v0.1.0-alpha.3/"
+                           f"plervo-suite-0.1.0-alpha.3-linux-x86_64.{format}"}
+        deb, rpm = linux("deb"), linux("rpm")
+        self.assertEqual(checked_downloads([deb, rpm])["linux"], [deb, rpm])
+        for invalid in (dict(rpm, validated=False), dict(rpm, sha256=""),
+                        dict(rpm, url=rpm["url"].replace("x86_64", "aarch64")),
+                        dict(rpm, version="0.1.0-alpha.4", url=rpm["url"].replace("alpha.3", "alpha.4")),
+                        linux("deb"), linux("exe")):
+            with self.subTest(invalid=invalid), self.assertRaises(ValueError):
+                checked_downloads([deb, invalid])
 
     def test_primary_download_cannot_be_pdf_or_mismatch_version_or_platform(self):
         release = json.loads((ROOT / "config.json").read_text())["downloads"][0]

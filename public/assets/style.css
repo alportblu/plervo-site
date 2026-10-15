@@ -7,3 +7,5 @@
 @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}*{transition:none!important}.button:hover{transform:none}}
 html[lang^=pt] .hero h1,html[lang^=es] .hero h1{font-size:clamp(54px,5.2vw,80px)}
 @media(max-width:760px){html[lang^=pt] .hero h1,html[lang^=es] .hero h1{font-size:clamp(44px,14.3vw,64px)}.languages a,.nav a,.footer a{min-height:44px}}
+
+.download .button + .button{margin-top:10px}
