@@ -25,12 +25,13 @@ if (typeof document !== "undefined") {
     card.classList.add("recommended");
     const badge = document.createElement("span");
     badge.className = "recommendation";
-    badge.textContent = "Sugerido para seu computador";
+    badge.textContent = note.dataset.badge;
     card.prepend(badge);
     primary.href = `#download-${platform}`;
-    primary.textContent = `Ver download para ${names[platform]} ↗`;
-    note.textContent = `Seu navegador indica ${names[platform]}. Confira o pacote abaixo ou escolha outro sistema.`;
+    const label = card.querySelector("a.button") ? primary.dataset.readyLabel : primary.dataset.pendingLabel;
+    primary.textContent = label.replace("{platform}", names[platform]) + " ↗";
+    note.textContent = note.dataset.desktop.replace("{platform}", names[platform]);
   } else if (platform === "mobile" && note) {
-    note.textContent = "O Plervo PDF é para computadores. Escolha abaixo Windows, macOS ou Linux.";
+    note.textContent = note.dataset.mobile;
   }
 }

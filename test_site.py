@@ -4,7 +4,7 @@ from pathlib import Path
 import unittest
 from urllib.parse import urlsplit
 
-from build import ROOT, checked_url, main
+from build import LANGUAGES, ROUTES, ROOT, checked_downloads, checked_url, load_locales, main, route
 
 
 class Links(HTMLParser):
@@ -13,9 +13,11 @@ class Links(HTMLParser):
         self.links = []
         self.ids = set()
         self.scripts = []
+        self.elements = []
 
     def handle_starttag(self, tag, attrs):
         attrs = dict(attrs)
+        self.elements.append((tag, attrs))
         if tag == "script":
             self.scripts.append(attrs)
         if "id" in attrs:
@@ -24,6 +26,10 @@ class Links(HTMLParser):
 
 
 class SiteTests(unittest.TestCase):
+    @classmethod
+    def setUpClass(cls):
+        main()
+
     def test_payment_links_reject_other_hosts_and_unsafe_urls(self):
         self.assertEqual(checked_url("https://buymeacoffee.com/alport", "buymeacoffee.com"), "https://buymeacoffee.com/alport")
         for url in ("http://buymeacoffee.com/alport", "https://buymeacoffee.com.evil/a", "https://evil@buymeacoffee.com/a", "https://buymeacoffee.com/a?next=evil", "javascript:alert(1)", "https://buymeacoffee.com/a\nb"):
@@ -31,11 +37,11 @@ class SiteTests(unittest.TestCase):
                 checked_url(url, "buymeacoffee.com")
 
     def test_generated_pages_have_no_broken_links_or_external_scripts(self):
-        main()
         for page in (ROOT / "dist").rglob("*.html"):
             parser = Links()
             parser.feed(page.read_text())
-            expected = [{"type": "module", "src": "/assets/downloads.mjs"}] if page == ROOT / "dist/index.html" else []
+            homes = {ROOT / "dist" / route(language, "home").lstrip("/") / "index.html" for language in LANGUAGES}
+            expected = [{"type": "module", "src": "/assets/downloads.mjs"}] if page in homes else []
             self.assertEqual(parser.scripts, expected, page)
             for link in parser.links:
                 parsed = urlsplit(link)
@@ -51,12 +57,75 @@ class SiteTests(unittest.TestCase):
                     target_parser.feed(target.read_text())
                     self.assertIn(parsed.fragment, target_parser.ids)
         config = json.loads((ROOT / "config.json").read_text())
-        support = (ROOT / "dist/apoiar/index.html").read_text()
-        if config["buy_me_a_coffee_url"]:
+        for language in LANGUAGES:
+            support = (ROOT / "dist" / route(language, "support").lstrip("/") / "index.html").read_text()
             self.assertIn(f'href="{config["buy_me_a_coffee_url"]}"', support)
-            self.assertNotIn("Nosso café ainda está passando", support)
-        else:
-            self.assertNotIn('href="https://buymeacoffee.com/', support)
+
+    def test_language_switch_preserves_page_and_navigation(self):
+        locales = load_locales()
+        self.assertEqual(len(list((ROOT / "dist").rglob("*.html"))), 18)
+        self.assertEqual(route("en", "home"), "/")
+        for language in LANGUAGES:
+            for page in (*ROUTES[language], "404"):
+                target = ROOT / "dist" / route(language, page).lstrip("/")
+                if page != "404":
+                    target /= "index.html"
+                parser = Links()
+                content = target.read_text()
+                parser.feed(content)
+                self.assertNotIn("{{", content)
+                self.assertIn(("html", {"lang": locales[language]["LANG"]}), parser.elements)
+                switches = [attrs for tag, attrs in parser.elements if tag == "a" and "hreflang" in attrs]
+                self.assertEqual(len(switches), 3)
+                self.assertEqual([link["href"] for link in switches], [route(other, page) for other in LANGUAGES])
+                self.assertEqual([link["href"] for link in switches if link.get("aria-current") == "page"], [route(language, page)])
+                self.assertIn(("link", {"rel": "canonical", "href": "https://plervo.com" + route(language, page)}), parser.elements)
+                self.assertIn(("link", {"rel": "alternate", "hreflang": "x-default", "href": "https://plervo.com" + route("en", page)}), parser.elements)
+                for target_page in ("home", "support", "privacy", "security", "about"):
+                    self.assertIn(route(language, target_page), parser.links)
+
+    def test_downloads_match_verified_package_in_each_language(self):
+        config = json.loads((ROOT / "config.json").read_text())
+        release = config["downloads"][0]
+        self.assertEqual(release["platform"], "macos")
+        filename = urlsplit(release["url"]).path.rsplit("/", 1)[-1]
+        self.assertEqual((ROOT / "dist/plervo-pdf-macos.sha256").read_text(), release["sha256"] + "  " + filename + "\n")
+        for language, strings in load_locales().items():
+            parser = Links()
+            parser.feed((ROOT / "dist" / route(language, "home").lstrip("/") / "index.html").read_text())
+            self.assertEqual([link for link in parser.links if "/releases/download/" in link], [release["url"]])
+            device = next(attrs for _, attrs in parser.elements if attrs.get("id") == "device-note")
+            self.assertEqual(device["data-desktop"], strings["DEVICE_DESKTOP"])
+            self.assertEqual(device["data-mobile"], strings["DEVICE_MOBILE"])
+            self.assertEqual(device["data-badge"], strings["DEVICE_BADGE"])
+
+    def test_release_guard_rejects_untrusted_unvalidated_or_unsigned_packages(self):
+        release = json.loads((ROOT / "config.json").read_text())["downloads"][0]
+        self.assertIn("macos", checked_downloads([release]))
+        for patch in (
+            {"url": "https://github.com/other/project/releases/download/v1/app.dmg"},
+            {"url": "https://github.com/alportblu/plervo-pdf/releases/download/v1/../../evil"},
+            {"sha256": "unknown"}, {"validated": False}, {"validated": "true"},
+            {"signed": False}, {"notarized": False}, {"platform": "android"},
+            {"platform": "windows", "signed": False},
+        ):
+            with self.subTest(patch=patch), self.assertRaises(ValueError):
+                checked_downloads([dict(release, **patch)])
+        with self.assertRaises(ValueError):
+            checked_downloads([release, release])
+
+    def test_legacy_portuguese_links_redirect_to_portuguese(self):
+        redirects = (ROOT / "dist/_redirects").read_text().splitlines()
+        for slug in ("apoiar", "seguranca", "privacidade", "sobre"):
+            self.assertIn(f"/{slug}/ /pt/{slug}/ 301", redirects)
+            self.assertIn(f"/{slug} /pt/{slug}/ 301", redirects)
+
+    def test_sitemap_covers_all_public_language_routes(self):
+        import xml.etree.ElementTree as ET
+        sitemap = ET.parse(ROOT / "dist/sitemap.xml")
+        urls = {item.text for item in sitemap.iter("{http://www.sitemaps.org/schemas/sitemap/0.9}loc")}
+        expected = {"https://plervo.com" + route(language, page) for language in LANGUAGES for page in ROUTES[language]}
+        self.assertEqual(urls, expected)
 
 
 if __name__ == "__main__":

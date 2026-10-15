@@ -2,5 +2,16 @@
   "site_url": "https://plervo.com",
   "buy_me_a_coffee_url": "https://buymeacoffee.com/alport",
   "source_url": "https://github.com/alportblu/plervo-pdf",
-  "downloads": []
+  "downloads": [
+    {
+      "platform": "macos",
+      "version": "0.1.0-alpha.1",
+      "url": "https://github.com/alportblu/plervo-pdf/releases/download/v0.1.0-alpha.1/plervo-pdf-0.1.0-alpha.1-macos-aarch64.dmg",
+      "sha256": "449d812090ca70e729e7cead094167173413d564e6b965e1402c5298f877edf4",
+      "validated": true,
+      "signed": true,
+      "notarized": true
+    }
+  ],
+  "release_url": "https://github.com/alportblu/plervo-pdf/releases/tag/v0.1.0-alpha.1"
 }
