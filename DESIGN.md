@@ -7,3 +7,5 @@ Research: UI/UX Pro Max (https://github.com/nextlevelbuilder/ui-ux-pro-max-skill
 Composition: type-led hero, real Suite screenshot, numbered installation flow, one honest product entry, high-contrast download area, security details and voluntary support. No fabricated testimonials, customer counts or unavailable apps. English default; Portuguese and Spanish preserve the current page.
 
 Suite screenshot: original Plervo UI rendered with Inter and egui's open fonts, without system fonts or personal documents. Capture is generated from the app, not a design mockup. Download configuration is updated only after signed artifacts pass validation.
+
+Deployment: the build gives CSS, JavaScript, the brand mark and the Suite preview content-based filenames. Returning visitors receive matching HTML and assets even when the browser retains a previous release's files.
