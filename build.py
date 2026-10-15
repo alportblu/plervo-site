@@ -38,8 +38,8 @@ def checked_downloads(releases):
     downloads = {}
     for release in releases:
         platform = release["platform"]
-        if platform not in PLATFORMS or platform in downloads:
-            raise ValueError("Unknown or duplicate platform")
+        if platform not in PLATFORMS:
+            raise ValueError("Unknown platform")
         checked_url(release["url"], "github.com")
         path = urlsplit(release["url"]).path
         if not re.fullmatch(r"/alportblu/plervo-pdf/releases/download/[\w.-]+/[\w.-]+", path):
@@ -49,7 +49,7 @@ def checked_downloads(releases):
             raise ValueError("Installer version must be explicit")
         suffixes = {"macos": r"macos-(?:aarch64|x86_64|universal)\.dmg",
                     "windows": r"windows-(?:x86_64|aarch64)\.(?:msi|exe)",
-                    "linux": r"linux-(?:x86_64|aarch64)\.(?:AppImage|deb|rpm)"}
+                    "linux": r"linux-x86_64\.(?:deb|rpm)"}
         expected = (r"/alportblu/plervo-pdf/releases/download/v" + re.escape(version)
                     + r"/plervo-suite-" + re.escape(version) + "-" + suffixes[platform])
         if not re.fullmatch(expected, path):
@@ -62,7 +62,11 @@ def checked_downloads(releases):
             raise ValueError("A public Mac or Windows installer must be signed")
         if platform == "macos" and release.get("notarized") is not True:
             raise ValueError("A public Mac installer must be notarized")
-        downloads[platform] = release
+        group = downloads.setdefault(platform, [])
+        if group and (platform != "linux" or version != group[0]["version"]
+                      or any(Path(item["url"]).suffix == Path(path).suffix for item in group)):
+            raise ValueError("Duplicate package format or inconsistent platform version")
+        group.append(release)
     return downloads
 
 
@@ -111,9 +115,10 @@ def main():
         "MARK_URL": "plervo-mark.svg", "PREVIEW_URL": "plervo-suite.png",
     }.items()}
     templates = {name: (ROOT / "templates" / f"{name}.html").read_text() for name in ("layout", "index", "page")}
-    for platform, release in downloads.items():
-        filename = urlsplit(release["url"]).path.rsplit("/", 1)[-1]
-        (dest / f"plervo-suite-{platform}.sha256").write_text(release["sha256"] + "  " + filename + "\n")
+    for platform, releases in downloads.items():
+        checksums = "".join(release["sha256"] + "  " + urlsplit(release["url"]).path.rsplit("/", 1)[-1] + "\n"
+                            for release in releases)
+        (dest / f"plervo-suite-{platform}.sha256").write_text(checksums)
     for language, strings in locales.items():
         values = {key: value if key.endswith("_HTML") else html.escape(value, quote=True) for key, value in strings.items()}
         values.update({key.upper() + "_URL": route(language, key) for key in ROUTES[language]})
@@ -123,10 +128,12 @@ def main():
         for platform, label in PLATFORMS.items():
             action = f'<span class="pending">{values[platform.upper() + "_PENDING"]}</span>'
             if platform in downloads:
-                release = downloads[platform]
-                action = (f'<a class="button" href="{html.escape(release["url"], quote=True)}">'
-                          f'{values["DOWNLOAD"]} {html.escape(release["version"])} ↗</a>'
-                          f'<a class="hash" href="/plervo-suite-{platform}.sha256">{values["CHECKSUM"]}</a>')
+                action = ""
+                for release in downloads[platform]:
+                    package = Path(release["url"]).suffix[1:].upper() if platform == "linux" else release["version"]
+                    action += (f'<a class="button" href="{html.escape(release["url"], quote=True)}">'
+                               f'{values["DOWNLOAD"]} {html.escape(package)} ↗</a>')
+                action += f'<a class="hash" href="/plervo-suite-{platform}.sha256">{values["CHECKSUM"]}</a>'
             cards.append(f'<article class="download" id="download-{platform}" data-platform="{platform}">'
                          f'<h3>{label}</h3><p>{values[platform.upper() + "_DETAIL"]}</p>{action}</article>')
         values["DOWNLOADS"] = "".join(cards)

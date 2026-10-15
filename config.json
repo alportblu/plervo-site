@@ -11,7 +11,21 @@
       "validated": true,
       "signed": true,
       "notarized": true
+    },
+    {
+      "platform": "linux",
+      "version": "0.1.0-alpha.3",
+      "url": "https://github.com/alportblu/plervo-pdf/releases/download/v0.1.0-alpha.3/plervo-suite-0.1.0-alpha.3-linux-x86_64.deb",
+      "sha256": "eea808b4886bccd43f63def458c63f88ba8fa73cedcd6cca3898dbaae9a3d674",
+      "validated": true
+    },
+    {
+      "platform": "linux",
+      "version": "0.1.0-alpha.3",
+      "url": "https://github.com/alportblu/plervo-pdf/releases/download/v0.1.0-alpha.3/plervo-suite-0.1.0-alpha.3-linux-x86_64.rpm",
+      "sha256": "b2e9517cb5f2ea18cf448bf26c7cea5d137c507c4901febe2a86c4e6743ecc60",
+      "validated": true
     }
   ],
-  "release_url": "https://github.com/alportblu/plervo-pdf/releases/tag/v0.1.0-alpha.2"
+  "release_url": "https://github.com/alportblu/plervo-pdf/releases/tag/v0.1.0-alpha.3"
 }
