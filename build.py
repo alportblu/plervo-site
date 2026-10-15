@@ -1,5 +1,6 @@
 """Build three static languages; English is the default, with no redirects by device."""
 import html
+import hashlib
 import json
 from pathlib import Path
 import re
@@ -83,6 +84,15 @@ def load_locales():
     return locales
 
 
+def versioned_asset(dest, filename):
+    """A new URL prevents cached assets from styling a different release's HTML."""
+    source = dest / "assets" / filename
+    digest = hashlib.sha256(source.read_bytes()).hexdigest()[:12]
+    target = source.with_name(f"{source.stem}.{digest}{source.suffix}")
+    shutil.copyfile(source, target)
+    return "/assets/" + target.name
+
+
 def main():
     config = json.loads((ROOT / "config.json").read_text())
     if config["site_url"] != "https://plervo.com":
@@ -96,6 +106,10 @@ def main():
     if dest.exists():
         shutil.rmtree(dest)
     shutil.copytree(ROOT / "public", dest)
+    assets = {key: versioned_asset(dest, filename) for key, filename in {
+        "STYLE_URL": "style.css", "SCRIPT_URL": "downloads.mjs",
+        "MARK_URL": "plervo-mark.svg", "PREVIEW_URL": "plervo-suite.png",
+    }.items()}
     templates = {name: (ROOT / "templates" / f"{name}.html").read_text() for name in ("layout", "index", "page")}
     for platform, release in downloads.items():
         filename = urlsplit(release["url"]).path.rsplit("/", 1)[-1]
@@ -104,6 +118,7 @@ def main():
         values = {key: value if key.endswith("_HTML") else html.escape(value, quote=True) for key, value in strings.items()}
         values.update({key.upper() + "_URL": route(language, key) for key in ROUTES[language]})
         values.update(DONATION_URL=donation, SOURCE_URL=source, RELEASE_URL=release_url)
+        values.update(assets)
         cards = []
         for platform, label in PLATFORMS.items():
             action = f'<span class="pending">{values[platform.upper() + "_PENDING"]}</span>'
@@ -130,7 +145,7 @@ def main():
             page_values["TITLE"] = values[page.upper() + "_TITLE"]
             page_values["DESCRIPTION"] = values[page.upper() + "_DESCRIPTION"]
             page_values["META_TITLE"] = page_values["TITLE"] + ("" if page == "home" else " — Plervo")
-            page_values["SCRIPTS"] = '<script type="module" src="/assets/downloads.mjs"></script>' if page == "home" else ""
+            page_values["SCRIPTS"] = f'<script type="module" src="{assets["SCRIPT_URL"]}"></script>' if page == "home" else ""
             if page == "home":
                 page_values["MAIN"] = render(templates["index"], page_values)
             else:

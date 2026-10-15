@@ -1,7 +1,10 @@
 import json
 from html.parser import HTMLParser
 from pathlib import Path
+import shutil
+import tempfile
 import unittest
+from unittest.mock import patch
 from urllib.parse import urlsplit
 
 from build import LANGUAGES, ROUTES, ROOT, checked_downloads, checked_url, load_locales, main, route
@@ -41,8 +44,12 @@ class SiteTests(unittest.TestCase):
             parser = Links()
             parser.feed(page.read_text())
             homes = {ROOT / "dist" / route(language, "home").lstrip("/") / "index.html" for language in LANGUAGES}
-            expected = [{"type": "module", "src": "/assets/downloads.mjs"}] if page in homes else []
-            self.assertEqual(parser.scripts, expected, page)
+            if page in homes:
+                self.assertEqual(len(parser.scripts), 1, page)
+                self.assertEqual(parser.scripts[0]["type"], "module")
+                self.assertRegex(parser.scripts[0]["src"], r"^/assets/downloads\.[a-f0-9]{12}\.mjs$")
+            else:
+                self.assertEqual(parser.scripts, [], page)
             for link in parser.links:
                 parsed = urlsplit(link)
                 if parsed.scheme or parsed.netloc:
@@ -83,6 +90,33 @@ class SiteTests(unittest.TestCase):
                 self.assertIn(("link", {"rel": "alternate", "hreflang": "x-default", "href": "https://plervo.com" + route("en", page)}), parser.elements)
                 for target_page in ("home", "support", "privacy", "security", "about"):
                     self.assertIn(route(language, target_page), parser.links)
+
+    def test_updated_styles_and_scripts_cannot_reuse_a_visitors_cached_url(self):
+        def resource_urls(root):
+            parser = Links()
+            parser.feed((root / "dist/index.html").read_text())
+            return {"style": next(attrs["href"] for tag, attrs in parser.elements
+                                  if tag == "link" and attrs.get("rel") == "stylesheet"),
+                    "script": parser.scripts[0]["src"]}
+
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            for name in ("public", "templates", "locales"):
+                shutil.copytree(ROOT / name, root / name)
+            shutil.copyfile(ROOT / "config.json", root / "config.json")
+            with patch("build.ROOT", root):
+                main()
+                original = resource_urls(root)
+                main()
+                self.assertEqual(resource_urls(root), original)
+                for name in ("style.css", "downloads.mjs"):
+                    with (root / "public/assets" / name).open("a") as stream:
+                        stream.write("\n/* changed release asset */\n")
+                main()
+                updated = resource_urls(root)
+                for kind in original:
+                    self.assertNotEqual(original[kind], updated[kind], kind)
+                    self.assertIn("changed release asset", (root / "dist" / updated[kind].lstrip("/")).read_text())
 
     def test_downloads_match_verified_package_in_each_language(self):
         config = json.loads((ROOT / "config.json").read_text())
