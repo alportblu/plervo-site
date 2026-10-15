@@ -89,7 +89,8 @@ class SiteTests(unittest.TestCase):
         release = config["downloads"][0]
         self.assertEqual(release["platform"], "macos")
         filename = urlsplit(release["url"]).path.rsplit("/", 1)[-1]
-        self.assertEqual((ROOT / "dist/plervo-pdf-macos.sha256").read_text(), release["sha256"] + "  " + filename + "\n")
+        self.assertTrue(filename.startswith("plervo-suite-"))
+        self.assertEqual((ROOT / "dist/plervo-suite-macos.sha256").read_text(), release["sha256"] + "  " + filename + "\n")
         for language, strings in load_locales().items():
             parser = Links()
             parser.feed((ROOT / "dist" / route(language, "home").lstrip("/") / "index.html").read_text())
@@ -113,6 +114,17 @@ class SiteTests(unittest.TestCase):
                 checked_downloads([dict(release, **patch)])
         with self.assertRaises(ValueError):
             checked_downloads([release, release])
+
+    def test_primary_download_cannot_be_pdf_or_mismatch_version_or_platform(self):
+        release = json.loads((ROOT / "config.json").read_text())["downloads"][0]
+        for patch in (
+            {"url": release["url"].replace("/plervo-suite-", "/plervo-pdf-")},
+            {"version": "9.9.9"},
+            {"platform": "linux"},
+            {"url": release["url"].replace("/download/v", "/download/other-")},
+        ):
+            with self.subTest(patch=patch), self.assertRaises(ValueError):
+                checked_downloads([dict(release, **patch)])
 
     def test_legacy_portuguese_links_redirect_to_portuguese(self):
         redirects = (ROOT / "dist/_redirects").read_text().splitlines()

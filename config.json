@@ -5,13 +5,13 @@
   "downloads": [
     {
       "platform": "macos",
-      "version": "0.1.0-alpha.1",
-      "url": "https://github.com/alportblu/plervo-pdf/releases/download/v0.1.0-alpha.1/plervo-pdf-0.1.0-alpha.1-macos-aarch64.dmg",
-      "sha256": "449d812090ca70e729e7cead094167173413d564e6b965e1402c5298f877edf4",
+      "version": "0.1.0-alpha.2",
+      "url": "https://github.com/alportblu/plervo-pdf/releases/download/v0.1.0-alpha.2/plervo-suite-0.1.0-alpha.2-macos-aarch64.dmg",
+      "sha256": "eac143ca362ec4878996a1e81ff3dca3d331defa139f9ef136d396bc3d17f5a8",
       "validated": true,
       "signed": true,
       "notarized": true
     }
   ],
-  "release_url": "https://github.com/alportblu/plervo-pdf/releases/tag/v0.1.0-alpha.1"
+  "release_url": "https://github.com/alportblu/plervo-pdf/releases/tag/v0.1.0-alpha.2"
 }

@@ -43,6 +43,16 @@ def checked_downloads(releases):
         path = urlsplit(release["url"]).path
         if not re.fullmatch(r"/alportblu/plervo-pdf/releases/download/[\w.-]+/[\w.-]+", path):
             raise ValueError("Installer must come from the Plervo release repository")
+        version = release["version"]
+        if not re.fullmatch(r"\d+\.\d+\.\d+(?:-[A-Za-z0-9]+(?:\.[A-Za-z0-9]+)*)?", version):
+            raise ValueError("Installer version must be explicit")
+        suffixes = {"macos": r"macos-(?:aarch64|x86_64|universal)\.dmg",
+                    "windows": r"windows-(?:x86_64|aarch64)\.(?:msi|exe)",
+                    "linux": r"linux-(?:x86_64|aarch64)\.(?:AppImage|deb|rpm)"}
+        expected = (r"/alportblu/plervo-pdf/releases/download/v" + re.escape(version)
+                    + r"/plervo-suite-" + re.escape(version) + "-" + suffixes[platform])
+        if not re.fullmatch(expected, path):
+            raise ValueError("The primary download must be Suite, with matching version and platform")
         if not re.fullmatch(r"[a-f0-9]{64}", release["sha256"]):
             raise ValueError("Installer SHA-256 is required")
         if release.get("validated") is not True:
@@ -89,7 +99,7 @@ def main():
     templates = {name: (ROOT / "templates" / f"{name}.html").read_text() for name in ("layout", "index", "page")}
     for platform, release in downloads.items():
         filename = urlsplit(release["url"]).path.rsplit("/", 1)[-1]
-        (dest / f"plervo-pdf-{platform}.sha256").write_text(release["sha256"] + "  " + filename + "\n")
+        (dest / f"plervo-suite-{platform}.sha256").write_text(release["sha256"] + "  " + filename + "\n")
     for language, strings in locales.items():
         values = {key: value if key.endswith("_HTML") else html.escape(value, quote=True) for key, value in strings.items()}
         values.update({key.upper() + "_URL": route(language, key) for key in ROUTES[language]})
@@ -101,7 +111,7 @@ def main():
                 release = downloads[platform]
                 action = (f'<a class="button" href="{html.escape(release["url"], quote=True)}">'
                           f'{values["DOWNLOAD"]} {html.escape(release["version"])} ↗</a>'
-                          f'<a class="hash" href="/plervo-pdf-{platform}.sha256">{values["CHECKSUM"]}</a>')
+                          f'<a class="hash" href="/plervo-suite-{platform}.sha256">{values["CHECKSUM"]}</a>')
             cards.append(f'<article class="download" id="download-{platform}" data-platform="{platform}">'
                          f'<h3>{label}</h3><p>{values[platform.upper() + "_DETAIL"]}</p>{action}</article>')
         values["DOWNLOADS"] = "".join(cards)
