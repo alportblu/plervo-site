@@ -7,7 +7,7 @@ import unittest
 from unittest.mock import patch
 from urllib.parse import urlsplit
 
-from build import LANGUAGES, ROUTES, ROOT, checked_downloads, checked_url, load_locales, main, route
+from build import LANGUAGES, ROUTES, ROOT, PRODUCTS, checked_downloads, checked_url, load_locales, main, product_cards, route
 
 
 class Links(HTMLParser):
@@ -177,6 +177,21 @@ class SiteTests(unittest.TestCase):
         ):
             with self.subTest(patch=patch), self.assertRaises(ValueError):
                 checked_downloads([dict(release, **patch)])
+
+    def test_catalogue_availability_follows_the_qualified_platform_packages(self):
+        release = json.loads((ROOT / "config.json").read_text())["downloads"][0]
+        values = load_locales()["en"]
+        icons = {product: f"/assets/products/{product}.svg" for product in PRODUCTS}
+        pending = product_cards(checked_downloads([dict(release, products=["pdf"])]), values, icons)
+        self.assertEqual(pending.count(values["PRODUCT_TESTING"]), len(PRODUCTS))
+        self.assertNotIn('href="#downloads"', pending)
+        available = product_cards(checked_downloads([dict(release, products=["pdf", "photo"])]), values, icons)
+        self.assertEqual(available.count('href="#downloads"'), 1)
+        self.assertIn(values["PRODUCT_ALPHA"] + " · macOS", available)
+        self.assertEqual(available.count(values["PRODUCT_TESTING"]), len(PRODUCTS) - 1)
+        for products in ([], "photo", ["pdf", "unknown"], ["pdf", "pdf"], [{}]):
+            with self.subTest(products=products), self.assertRaises(ValueError):
+                checked_downloads([dict(release, products=products)])
 
     def test_legacy_portuguese_links_redirect_to_portuguese(self):
         redirects = (ROOT / "dist/_redirects").read_text().splitlines()
