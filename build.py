@@ -15,6 +15,9 @@ ROUTES = {
     "es": {"home": "", "support": "apoyar", "security": "seguridad", "privacy": "privacidad", "about": "acerca"},
 }
 PLATFORMS = {"macos": "macOS", "windows": "Windows", "linux": "Linux"}
+PRODUCTS = {"photo": "Photo", "vector": "Vector", "video": "Video", "develop": "Develop",
+            "motion": "Motion", "publish": "Publish", "write": "Write", "slides": "Slides",
+            "sheets": "Sheets", "cad": "CAD", "audio": "Audio", "canvas": "Canvas"}
 
 
 def route(language, page):
@@ -62,8 +65,14 @@ def checked_downloads(releases):
             raise ValueError("A public Mac or Windows installer must be signed")
         if platform == "macos" and release.get("notarized") is not True:
             raise ValueError("A public Mac installer must be notarized")
+        products = release.get("products", ["pdf"])
+        if (not isinstance(products, list) or not products
+                or any(not isinstance(product, str) or product not in {"pdf", *PRODUCTS} for product in products)
+                or len(products) != len(set(products))):
+            raise ValueError("The Suite package must list its qualified products")
         group = downloads.setdefault(platform, [])
         if group and (platform != "linux" or version != group[0]["version"]
+                      or products != group[0].get("products", ["pdf"])
                       or any(Path(item["url"]).suffix == Path(path).suffix for item in group)):
             raise ValueError("Duplicate package format or inconsistent platform version")
         group.append(release)
@@ -94,7 +103,25 @@ def versioned_asset(dest, filename):
     digest = hashlib.sha256(source.read_bytes()).hexdigest()[:12]
     target = source.with_name(f"{source.stem}.{digest}{source.suffix}")
     shutil.copyfile(source, target)
-    return "/assets/" + target.name
+    return "/" + target.relative_to(dest).as_posix()
+
+
+def product_cards(downloads, values, icon_urls):
+    cards = []
+    for product, name in PRODUCTS.items():
+        platforms = [PLATFORMS[platform] for platform, releases in downloads.items()
+                     if product in releases[0].get("products", ["pdf"])]
+        status = values["PRODUCT_TESTING"]
+        action = ""
+        if platforms:
+            status = values["PRODUCT_ALPHA"] + " · " + " / ".join(platforms)
+            action = f'<a class="text-link" href="#downloads">{values["PDF_ACTION"]} ↗</a>'
+        language = f'<p class="product-language">{values["PRODUCT_ENGLISH_ONLY"]}</p>' if product in ("slides", "audio") else ""
+        cards.append(f'<article class="product-card" id="app-{product}">'
+                     f'<img src="{icon_urls[product]}" width="56" height="56" alt="" loading="lazy">'
+                     f'<h3>Plervo {name}</h3><p>{values["PRODUCT_" + product.upper()]}</p>'
+                     f'<span class="app-status">{status}</span>{language}{action}</article>')
+    return '<div class="product-grid">' + "".join(cards) + '</div>'
 
 
 def main():
@@ -114,6 +141,7 @@ def main():
         "STYLE_URL": "style.css", "SCRIPT_URL": "downloads.mjs",
         "MARK_URL": "plervo-mark.svg", "PREVIEW_URL": "plervo-suite.png",
     }.items()}
+    icons = {product: versioned_asset(dest, f"products/{product}.svg") for product in PRODUCTS}
     templates = {name: (ROOT / "templates" / f"{name}.html").read_text() for name in ("layout", "index", "page")}
     for platform, releases in downloads.items():
         checksums = "".join(release["sha256"] + "  " + urlsplit(release["url"]).path.rsplit("/", 1)[-1] + "\n"
@@ -124,6 +152,7 @@ def main():
         values.update({key.upper() + "_URL": route(language, key) for key in ROUTES[language]})
         values.update(DONATION_URL=donation, SOURCE_URL=source, RELEASE_URL=release_url)
         values.update(assets)
+        values["PRODUCT_CARDS"] = product_cards(downloads, values, icons)
         cards = []
         for platform, label in PLATFORMS.items():
             action = f'<span class="pending">{values[platform.upper() + "_PENDING"]}</span>'
