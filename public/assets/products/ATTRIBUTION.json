@@ -1,0 +1,67 @@
+{
+  "title": "Original Plervo application icons",
+  "author": "Plervo contributors",
+  "license": "MIT OR Apache-2.0",
+  "assets": [
+    {
+      "file": "photo.svg",
+      "source": "https://github.com/alportblu/plervo-pdf/blob/9c1ac11b65b3661de310c409080b4f4e3f86fd72/assets/products/photo/icon.svg",
+      "sha256": "37be5cc5321d4c3363e203f26328516430d1eb70c4bc92f68894a11dc1ed0a09"
+    },
+    {
+      "file": "vector.svg",
+      "source": "https://github.com/alportblu/plervo-pdf/blob/9c1ac11b65b3661de310c409080b4f4e3f86fd72/assets/products/vector/icon.svg",
+      "sha256": "988779013933237f674ecd5bfe8c2c6416c20c01b73d7fa289903436ecaf2e7d"
+    },
+    {
+      "file": "video.svg",
+      "source": "https://github.com/alportblu/plervo-pdf/blob/9c1ac11b65b3661de310c409080b4f4e3f86fd72/assets/products/video/icon.svg",
+      "sha256": "f2890ee1861e616c91361c1db56dcadf75ae56454299c2c81be9f1fdbe10cfcd"
+    },
+    {
+      "file": "develop.svg",
+      "source": "https://github.com/alportblu/plervo-pdf/blob/9c1ac11b65b3661de310c409080b4f4e3f86fd72/assets/products/develop/icon.svg",
+      "sha256": "0820219e10803c1c617ad181284d11e443019e3041258ce415e9df743f213f9b"
+    },
+    {
+      "file": "motion.svg",
+      "source": "https://github.com/alportblu/plervo-pdf/blob/9c1ac11b65b3661de310c409080b4f4e3f86fd72/assets/products/motion/icon.svg",
+      "sha256": "bbeb790d08607f9e32571fef7a80c9c3ca8c40395b5006e952ae99b48ed89fad"
+    },
+    {
+      "file": "publish.svg",
+      "source": "https://github.com/alportblu/plervo-pdf/blob/9c1ac11b65b3661de310c409080b4f4e3f86fd72/assets/products/publish/icon.svg",
+      "sha256": "dd0795fe3452ecd9d056d6ee72006016ef9e186f6aea326765379bd00507f7d1"
+    },
+    {
+      "file": "write.svg",
+      "source": "https://github.com/alportblu/plervo-pdf/blob/9c1ac11b65b3661de310c409080b4f4e3f86fd72/assets/products/write/icon.svg",
+      "sha256": "a54bb84d9f1d07442f615b529fe4efef7ed2e2215d5bc2c0556aa1322e9be488"
+    },
+    {
+      "file": "slides.svg",
+      "source": "https://github.com/alportblu/plervo-pdf/blob/9c1ac11b65b3661de310c409080b4f4e3f86fd72/assets/products/slides/icon.svg",
+      "sha256": "0b67772ec5dc6840df0e25603e7acafa72fd49e0e93ca0ee2006fc70f3ebbc08"
+    },
+    {
+      "file": "sheets.svg",
+      "source": "https://github.com/alportblu/plervo-pdf/blob/9c1ac11b65b3661de310c409080b4f4e3f86fd72/assets/products/sheets/icon.svg",
+      "sha256": "fed93468774ab8659dd981245ddfc87d21b1a00ffef5e93f1cfe6209a9ea6291"
+    },
+    {
+      "file": "cad.svg",
+      "source": "https://github.com/alportblu/plervo-pdf/blob/9c1ac11b65b3661de310c409080b4f4e3f86fd72/assets/products/cad/icon.svg",
+      "sha256": "e0a88bd8bf36b8fad310476610a5460a112c07261585433e4a40c4a55a8b93f2"
+    },
+    {
+      "file": "audio.svg",
+      "source": "https://github.com/alportblu/plervo-pdf/blob/9c1ac11b65b3661de310c409080b4f4e3f86fd72/assets/products/audio/icon.svg",
+      "sha256": "0bf6d520d5a33fa7ca51ff1b09a6d88adcd2ad03f90ef88cfc377682f4f806e1"
+    },
+    {
+      "file": "canvas.svg",
+      "source": "https://github.com/alportblu/plervo-pdf/blob/9c1ac11b65b3661de310c409080b4f4e3f86fd72/assets/products/canvas/icon.svg",
+      "sha256": "78393df071e3407ba674d1784382ebc36518af2afea7a96825f1436054402813"
+    }
+  ]
+}
