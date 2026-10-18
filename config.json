@@ -10,6 +10,7 @@
       "sha256": "c508f23cc5683fe597bd2c0f7f56e6a80d3090d2b842b8a80826833fc2ff6dca",
       "validated": true,
       "products": [
+        "audio",
         "cad",
         "develop",
         "motion",
@@ -32,7 +33,9 @@
       "sha256": "9ef2f97e78c813c4aef68b71c239dbf8194ccc5e2b7faf9d9eca59d12b2c88c5",
       "validated": true,
       "products": [
+        "audio",
         "cad",
+        "canvas",
         "develop",
         "motion",
         "pdf",
@@ -52,7 +55,9 @@
       "sha256": "4d46ac5f69efce2dbecc15cd2db02765a142135f86c03e5cf87d1afc62eb75ca",
       "validated": true,
       "products": [
+        "audio",
         "cad",
+        "canvas",
         "develop",
         "motion",
         "pdf",
