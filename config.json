@@ -5,27 +5,63 @@
   "downloads": [
     {
       "platform": "macos",
-      "version": "0.1.0-alpha.2",
-      "url": "https://github.com/alportblu/plervo-pdf/releases/download/v0.1.0-alpha.2/plervo-suite-0.1.0-alpha.2-macos-aarch64.dmg",
-      "sha256": "57087d173a6272c85ce395d6042d5c2697d0b3a0f420f4aec7fc1ea6012f4192",
+      "version": "0.1.0-alpha.4",
+      "url": "https://github.com/alportblu/plervo-pdf/releases/download/v0.1.0-alpha.4/plervo-suite-0.1.0-alpha.4-macos-aarch64.dmg",
+      "sha256": "c508f23cc5683fe597bd2c0f7f56e6a80d3090d2b842b8a80826833fc2ff6dca",
       "validated": true,
+      "products": [
+        "cad",
+        "motion",
+        "pdf",
+        "photo",
+        "publish",
+        "sheets",
+        "slides",
+        "vector",
+        "video",
+        "write"
+      ],
       "signed": true,
       "notarized": true
     },
     {
       "platform": "linux",
-      "version": "0.1.0-alpha.3",
-      "url": "https://github.com/alportblu/plervo-pdf/releases/download/v0.1.0-alpha.3/plervo-suite-0.1.0-alpha.3-linux-x86_64.deb",
-      "sha256": "eea808b4886bccd43f63def458c63f88ba8fa73cedcd6cca3898dbaae9a3d674",
-      "validated": true
+      "version": "0.1.0-alpha.4",
+      "url": "https://github.com/alportblu/plervo-pdf/releases/download/v0.1.0-alpha.4/plervo-suite-0.1.0-alpha.4-linux-x86_64.deb",
+      "sha256": "9ef2f97e78c813c4aef68b71c239dbf8194ccc5e2b7faf9d9eca59d12b2c88c5",
+      "validated": true,
+      "products": [
+        "cad",
+        "develop",
+        "motion",
+        "pdf",
+        "photo",
+        "publish",
+        "slides",
+        "vector",
+        "video",
+        "write"
+      ]
     },
     {
       "platform": "linux",
-      "version": "0.1.0-alpha.3",
-      "url": "https://github.com/alportblu/plervo-pdf/releases/download/v0.1.0-alpha.3/plervo-suite-0.1.0-alpha.3-linux-x86_64.rpm",
-      "sha256": "b2e9517cb5f2ea18cf448bf26c7cea5d137c507c4901febe2a86c4e6743ecc60",
-      "validated": true
+      "version": "0.1.0-alpha.4",
+      "url": "https://github.com/alportblu/plervo-pdf/releases/download/v0.1.0-alpha.4/plervo-suite-0.1.0-alpha.4-linux-x86_64.rpm",
+      "sha256": "4d46ac5f69efce2dbecc15cd2db02765a142135f86c03e5cf87d1afc62eb75ca",
+      "validated": true,
+      "products": [
+        "cad",
+        "develop",
+        "motion",
+        "pdf",
+        "photo",
+        "publish",
+        "slides",
+        "vector",
+        "video",
+        "write"
+      ]
     }
   ],
-  "release_url": "https://github.com/alportblu/plervo-pdf/releases/tag/v0.1.0-alpha.3"
+  "release_url": "https://github.com/alportblu/plervo-pdf/releases/tag/v0.1.0-alpha.4"
 }
