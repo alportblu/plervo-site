@@ -11,6 +11,7 @@
       "validated": true,
       "products": [
         "cad",
+        "develop",
         "motion",
         "pdf",
         "photo",
@@ -37,6 +38,7 @@
         "pdf",
         "photo",
         "publish",
+        "sheets",
         "slides",
         "vector",
         "video",
@@ -56,6 +58,7 @@
         "pdf",
         "photo",
         "publish",
+        "sheets",
         "slides",
         "vector",
         "video",
