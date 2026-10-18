@@ -1,6 +1,12 @@
-# Plervo — site
+# Plervo website
 
-Site estático independente: HTML/CSS e um módulo local que sugere o sistema do download. Sem analytics, cookies ou widgets externos. A sugestão usa informações básicas já expostas pelo navegador, não as transmite e não inicia downloads automaticamente. As três opções permanecem disponíveis; celulares e tablets recebem uma indicação de que o app é para computadores.
+The official website for **Plervo Suite**, an open-source family of desktop apps for documents, design and media. Visitors can explore the apps, download the Suite for their computer, read security information and optionally support **AlporT**.
+
+**Live site:** [plervo.com](https://plervo.com) · **App source and releases:** [alportblu/plervo-pdf](https://github.com/alportblu/plervo-pdf) · **Optional support:** [Buy Me a Coffee](https://buymeacoffee.com/alport)
+
+## Run locally
+
+This is a standalone static site built with Python, HTML and CSS, plus a local JavaScript module that suggests the appropriate download platform.
 
 ```sh
 python3 build.py
@@ -9,26 +15,48 @@ node --test tests/downloads.test.mjs
 python3 -m http.server 4173 --bind 127.0.0.1 --directory dist
 ```
 
-Publicado na Cloudflare Pages Free em https://plervo.com, também disponível em https://www.plervo.com e https://plervo-site.pages.dev, usando Direct Upload do diretório `dist`. O domínio permanece registrado na GoDaddy e o DNS está na Cloudflare; ambos os domínios próprios foram verificados por HTTPS. O workflow `Plervo site checks` verifica a geração, os links, a proteção dos downloads e a sugestão de sistema em cada push e pull request. A branch `main` exige PR e esse check aprovado, inclusive para administradores.
+There are no analytics, cookies or external widgets. Platform detection uses basic information already exposed by the browser, does not transmit it and never starts a download automatically. All three platform options remain visible; phones and tablets receive a message explaining that the apps are for desktop computers. Detection does not assume the processor architecture.
 
-A página `/security/` (e suas traduções) aponta para o canal privado de relatos habilitado em `alportblu/plervo-pdf`, no GitHub. O site não recebe o conteúdo desses relatos.
+## Hosting and checks
 
-`config.json` controla os links públicos. O apoio está configurado para `https://buymeacoffee.com/alport`, fornecido pelo proprietário. O crédito público usa **AlporT**. A página `/support/` (e suas traduções) abre o serviço somente quando o visitante escolhe o link.
+The site runs on Cloudflare Pages Free at https://plervo.com, https://www.plervo.com and https://plervo-site.pages.dev, using Direct Upload of the `dist` directory. The domain remains registered with GoDaddy; DNS is managed by Cloudflare. Both custom domains have been verified over HTTPS.
 
-O download principal é **Plervo Suite 0.1.0-alpha.4**, para Mac com Apple Silicon ou Linux x86_64. O usuário instala a Suite e escolhe os apps no catálogo. A release oferece os 13 apps nas duas plataformas: PDF, Photo, Vector, Video, Develop, Motion, Publish, Write, Slides, Sheets, CAD, Audio e Canvas. Slides e Audio ainda têm interface somente em inglês nesta alpha. Mac usa pacotes assinados e notarizados; Linux oferece DEB e RPM e exige glibc 2.39 ou superior. As dependências declaradas no pacote da Suite incluem ALSA para os apps multimídia. Windows aguarda confirmação da SignPath, integração da assinatura e validação dos pacotes finais assinados. Os 13 candidatos internos passaram por instalação, reparo/remoção, operações representativas de linha de comando e abertura/fechamento normal da interface no Windows nativo.
+The `Plervo site checks` workflow checks generation, links, download safeguards and platform suggestions on every push and pull request. The protected `main` branch requires a pull request and this passing check, including for administrators.
 
-Os downloads públicos dos apps passam por instalação e reinstalação usando os componentes reais da Suite em destinos isolados; Linux também verifica remoção e preservação de arquivos sintéticos. Os testes locais de Linux usam containers x86_64 emulados, além da aceitação nativa registrada no CI. A alpha não é uma versão estável: GUI final e instalação em Mac limpo, hardware de áudio, plugins externos e mais dispositivos continuam fora da cobertura concluída. Consulte as notas da release para os limites atuais.
+## Public downloads
 
-Publicar o site somente depois que a release correspondente estiver acessível anonimamente e o gerenciamento de cada app anunciado tiver sido verificado pela Suite. Nunca cadastrar links de exemplo, pacotes sem validação ou uma versão estável inexistente. O gerador exige hash SHA-256, URL no repositório oficial, validação explícita e assinatura para Mac/Windows; Mac também exige notarização. Um pacote PDF direto, ou com versão/plataforma diferente, é recusado como download principal.
+The main download is **Plervo Suite 0.1.0-alpha.4**, for Mac with Apple Silicon or Linux x86_64. Install the Suite first, then choose apps from its catalog.
 
-Não existem dados bancários, tokens de serviço ou chaves privadas neste projeto.
+All 13 apps are available on both platforms: PDF, Photo, Vector, Video, Develop, Motion, Publish, Write, Slides, Sheets, CAD, Audio and Canvas. Slides and Audio have English-only interfaces in this alpha. Mac packages are signed and notarized. Linux offers DEB and RPM packages and requires glibc 2.39 or newer; the Suite's declared dependencies include ALSA for multimedia apps.
 
-Identidade SVG, layout e captura da Suite: originais do Plervo. A imagem atual mostra a Suite alpha.4 em execução nativa no Ubuntu 24.04, capturada pelo [CI de aceitação](https://github.com/alportblu/plervo-pdf/actions/runs/39001993059), fonte `4da05339d4f6f6715d09f0622975b8164be7f480`. Inter Regular e SemiBold são servidas localmente sob OFL-1.1, com a licença incluída; têm origem nos assets já atribuídos do Plervo PDF. Nenhum recurso gráfico da Adobe ou ArtCraft. A direção visual e as ferramentas pesquisadas estão em `DESIGN.md`.
+Windows awaits SignPath approval, signing integration and validation of the final signed packages. All 13 internal candidates passed native installation, repair/removal, representative command-line operations, and normal GUI startup/close checks.
 
-O endereço `/` é sempre inglês, sem redirecionamento automático por idioma do navegador. O seletor no cabeçalho abre a mesma página em inglês, português (`/pt/`) ou espanhol (`/es/`). A navegação mantém o idioma pelo endereço, sem cookies, armazenamento local ou JavaScript adicional. Páginas de apoio, segurança, privacidade, créditos e 404 têm traduções; os antigos caminhos em português redirecionam para `/pt/`. Metadados, canonical, hreflang e sitemap acompanham cada idioma. Textos ficam em `locales/{en,pt,es}.json`, com paridade de chaves obrigatória. A sugestão de download identifica somente o sistema; não presume a arquitetura do processador e não inicia downloads.
+Public app downloads are tested through the Suite's actual installation components in isolated destinations, including reinstallation. Linux also checks removal and preservation of synthetic files. Local Linux checks use emulated x86_64 containers in addition to native acceptance recorded in CI.
 
-## Catálogo da família
+This is an experimental alpha. Final Mac GUI acceptance, installation on a clean Mac, audio hardware, external plugins and wider device coverage remain outside the completed validation. See the [release notes](https://github.com/alportblu/plervo-pdf/releases/tag/v0.1.0-alpha.4) for current limits.
 
-A página inclui Photo, Vector, Video, Develop, Motion, Publish, Write, Slides, Sheets, CAD, Audio e Canvas, com descrições em inglês, português e espanhol. Os ícones são os originais atribuídos da família Plervo; fontes, hashes e licenças ficam em `public/assets/products/`.
+## Download configuration
 
-A disponibilidade de cada app vem do campo `products` de cada download qualificado em `config.json`. Releases anteriores sem o campo oferecem somente PDF. DEB e RPM da mesma versão devem listar os mesmos produtos. Não acrescentar um produto antes de publicar e verificar seu pacote e o gerenciamento pela Suite naquela plataforma. Enquanto isso, o cartão mostra “Em validação”, sem link que prometa instalação. Slides e Audio indicam a interface em inglês.
+`config.json` controls public links. Publish the site only after the matching release can be downloaded anonymously and the Suite has verified management of every advertised app. Never add placeholder links, unvalidated packages or a nonexistent stable release.
+
+The generator requires a SHA-256 checksum, an official repository URL, explicit validation and publisher signing for Mac/Windows. Mac also requires notarization. A direct PDF package, or one with a mismatched version or platform, is rejected as the main download.
+
+Each qualified download's `products` field controls app availability. Older releases without this field offer PDF only. DEB and RPM packages for the same version must list the same products. Add a product only after publishing and verifying its package and Suite management on that platform. Until then, its card says “In validation,” without promising installation. Slides and Audio identify their English-only interfaces.
+
+## Languages
+
+The root URL `/` always opens in English, without redirecting based on browser language. The header selector opens the same page in English, Portuguese (`/pt/`) or Spanish (`/es/`). Navigation preserves the language through the URL, without cookies, local storage or additional JavaScript.
+
+Support, security, privacy, credits and 404 pages are translated. Legacy Portuguese paths redirect to `/pt/`. Metadata, canonical URLs, hreflang and the sitemap follow each language. Text lives in `locales/{en,pt,es}.json`; matching key coverage is required.
+
+## Security and optional support
+
+The `/security/` page and its translations point to the private GitHub reporting channel enabled in `alportblu/plervo-pdf`. The site does not receive the reports' contents.
+
+The owner-provided support destination is https://buymeacoffee.com/alport. Public creator credit uses **AlporT**. The `/support/` page and its translations open the service only when the visitor chooses the link. There are no banking details, service tokens or private keys in this project.
+
+## Design and attribution
+
+The SVG identity, layout and Suite screenshot are original Plervo work. The current image shows Suite alpha.4 running natively on Ubuntu 24.04, captured by the [acceptance CI](https://github.com/alportblu/plervo-pdf/actions/runs/39001993059) from source `4da05339d4f6f6715d09f0622975b8164be7f480`.
+
+Inter Regular and SemiBold are served locally under OFL-1.1, with the license included, and come from the already attributed Plervo PDF assets. No Adobe or ArtCraft artwork is included. The app catalog uses the original, attributed Plervo icon family; sources, hashes and licenses are in `public/assets/products/`. The visual direction and research are documented in [DESIGN.md](DESIGN.md).
