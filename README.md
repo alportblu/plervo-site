@@ -25,15 +25,15 @@ The `Plervo site checks` workflow checks generation, links, download safeguards 
 
 ## Public downloads
 
-The main download is **Plervo Suite 0.1.0-alpha.4**, for Mac with Apple Silicon or Linux x86_64. Install the Suite first, then choose apps from its catalog.
+The main download is **Plervo Suite 0.1.0-alpha.5**, for Mac with Apple Silicon or Linux x86_64. Install the Suite first, then choose apps from its catalog. Apps are versioned independently: PDF retains its qualified alpha.4 packages; the other twelve apps use alpha.5 with visible optional Support actions in their headers.
 
 All 13 apps are available on both platforms: PDF, Photo, Vector, Video, Develop, Motion, Publish, Write, Slides, Sheets, CAD, Audio and Canvas. Slides and Audio have English-only interfaces in this alpha. Mac packages are signed and notarized. Linux offers DEB and RPM packages and requires glibc 2.39 or newer; the Suite's declared dependencies include ALSA for multimedia apps.
 
-Windows awaits SignPath approval, signing integration and validation of the final signed packages. All 13 internal candidates passed native installation, repair/removal, representative command-line operations, and normal GUI startup/close checks.
+Windows awaits SignPath approval, signing integration and validation of the final signed packages. Earlier internal candidates for all 13 apps passed native installation, repair/removal, representative command-line operations, and normal GUI startup/close checks.
 
 Public app downloads are tested through the Suite's actual installation components in isolated destinations, including reinstallation. Linux also checks removal and preservation of synthetic files. Local Linux checks use emulated x86_64 containers in addition to native acceptance recorded in CI.
 
-This is an experimental alpha. Final Mac GUI acceptance, installation on a clean Mac, audio hardware, external plugins and wider device coverage remain outside the completed validation. See the [release notes](https://github.com/alportblu/plervo-pdf/releases/tag/v0.1.0-alpha.4) for current limits.
+This is an experimental alpha. Final Mac GUI acceptance, installation on a clean Mac, audio hardware, external plugins and wider device coverage remain outside the completed validation. See the [release notes](https://github.com/alportblu/plervo-pdf/releases/tag/v0.1.0-alpha.5) for current limits.
 
 ## Download configuration
 
