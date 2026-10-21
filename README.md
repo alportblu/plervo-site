@@ -25,11 +25,11 @@ The `Plervo site checks` workflow checks generation, links, download safeguards 
 
 ## Public downloads
 
-The main download is **Plervo Suite 0.1.0-alpha.5**, for Mac with Apple Silicon or Linux x86_64. Install the Suite first, then choose apps from its catalog. Apps are versioned independently: PDF retains its qualified alpha.4 packages; the other twelve apps use alpha.5 with visible optional Support actions in their headers.
+The main download is **Plervo Suite 0.1.0-alpha.5**, for Mac with Apple Silicon or Linux x86_64. Install the Suite first, then choose apps from its catalog. Apps are versioned independently: PDF has a separate alpha.7 security release for its newly qualified platforms; the other twelve apps use alpha.5 with visible optional Support actions in their headers. See the PDF release notes for exact platform availability.
 
 All 13 apps are available on both platforms: PDF, Photo, Vector, Video, Develop, Motion, Publish, Write, Slides, Sheets, CAD, Audio and Canvas. Slides and Audio have English-only interfaces in this alpha. Mac packages are signed and notarized. Linux offers DEB and RPM packages and requires glibc 2.39 or newer; the Suite's declared dependencies include ALSA for multimedia apps.
 
-Plervo PDF is being prepared for free Microsoft Store distribution. Account verification, Store certification and final installation checks are pending. Public Windows downloads are not yet available; the other Windows apps remain in preparation. Earlier internal candidates for all 13 apps passed native installation, repair/removal, representative command-line operations, and normal GUI startup/close checks.
+Plervo PDF is available free in [Microsoft Store](https://apps.microsoft.com/detail/9PBWKBZRBJNR) for Windows 10/11 x64. Security update 1.0.6.0 has passed Microsoft certification; Store rollout controls when the corrected package reaches each device. The other Windows apps remain in preparation. Earlier internal candidates for all 13 apps passed native installation, repair/removal, representative command-line operations, and normal GUI startup/close checks.
 
 Public app downloads are tested through the Suite's actual installation components in isolated destinations, including reinstallation. Linux also checks removal and preservation of synthetic files. Local Linux checks use emulated x86_64 containers in addition to native acceptance recorded in CI.
 
@@ -50,6 +50,8 @@ The root URL `/` always opens in English, without redirecting based on browser l
 Support, security, privacy, credits and 404 pages are translated. Legacy Portuguese paths redirect to `/pt/`. Metadata, canonical URLs, hreflang and the sitemap follow each language. Text lives in `locales/{en,pt,es}.json`; matching key coverage is required.
 
 ## Security and optional support
+
+The security pages explain the [PDF alpha.7 redaction correction](https://github.com/alportblu/plervo-pdf/releases/tag/v0.1.0-alpha.7), the additional distribution notices and the need to review previously redacted files. Updating does not remove retained data from existing documents.
 
 The `/security/` page and its translations point to the private GitHub reporting channel enabled in `alportblu/plervo-pdf`. The site does not receive the reports' contents.
 
