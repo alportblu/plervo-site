@@ -28,7 +28,8 @@ if (typeof document !== "undefined") {
     badge.textContent = note.dataset.badge;
     card.prepend(badge);
     primary.href = `#download-${platform}`;
-    const label = card.querySelector("a.button") ? primary.dataset.readyLabel : primary.dataset.pendingLabel;
+    const label = card.dataset.downloadLabel
+      || (card.querySelector("a.button") ? primary.dataset.readyLabel : primary.dataset.pendingLabel);
     primary.textContent = label.replace("{platform}", names[platform]) + " ↗";
     note.textContent = note.dataset.desktop.replace("{platform}", names[platform]);
   } else if (platform === "mobile" && note) {
