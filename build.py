@@ -79,6 +79,12 @@ def checked_downloads(releases):
     return downloads
 
 
+def checked_pdf_store(value):
+    if value != "https://apps.microsoft.com/detail/9PBWKBZRBJNR":
+        raise ValueError("The PDF Store link must use its verified Microsoft product identity")
+    return checked_url(value, "apps.microsoft.com")
+
+
 def render(template, values):
     def replace(match):
         key = match.group(1)
@@ -132,6 +138,7 @@ def main():
     source = checked_url(config["source_url"], "github.com")
     release_url = checked_url(config["release_url"], "github.com")
     downloads = checked_downloads(config["downloads"])
+    pdf_store = checked_pdf_store(config["pdf_store_url"])
     locales = load_locales()
     dest = ROOT / "dist"
     if dest.exists():
@@ -156,14 +163,20 @@ def main():
         cards = []
         for platform, label in PLATFORMS.items():
             action = f'<span class="pending">{values[platform.upper() + "_PENDING"]}</span>'
+            primary_label = ""
+            if platform == "windows":
+                action = (f'<a class="button" href="{pdf_store}">{values["PDF_STORE_DOWNLOAD"]} ↗</a>'
+                          f'<span class="hash">Microsoft Store · {values["PDF_STORE_UPDATES"]}</span>')
+                primary_label = f' data-download-label="{values["PDF_STORE_PRIMARY"]}"'
             if platform in downloads:
+                primary_label = ""
                 action = ""
                 for release in downloads[platform]:
                     package = Path(release["url"]).suffix[1:].upper() if platform == "linux" else release["version"]
                     action += (f'<a class="button" href="{html.escape(release["url"], quote=True)}">'
                                f'{values["DOWNLOAD"]} {html.escape(package)} ↗</a>')
                 action += f'<a class="hash" href="/plervo-suite-{platform}.sha256">{values["CHECKSUM"]}</a>'
-            cards.append(f'<article class="download" id="download-{platform}" data-platform="{platform}">'
+            cards.append(f'<article class="download" id="download-{platform}" data-platform="{platform}"{primary_label}>'
                          f'<h3>{label}</h3><p>{values[platform.upper() + "_DETAIL"]}</p>{action}</article>')
         values["DOWNLOADS"] = "".join(cards)
         for page in (*ROUTES[language], "404"):

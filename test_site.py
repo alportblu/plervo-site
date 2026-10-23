@@ -7,7 +7,7 @@ import unittest
 from unittest.mock import patch
 from urllib.parse import urlsplit
 
-from build import LANGUAGES, ROUTES, ROOT, PRODUCTS, checked_downloads, checked_url, load_locales, main, product_cards, route
+from build import LANGUAGES, ROUTES, ROOT, PRODUCTS, checked_downloads, checked_pdf_store, checked_url, load_locales, main, product_cards, route
 
 
 class Links(HTMLParser):
@@ -32,6 +32,22 @@ class SiteTests(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         main()
+
+    def test_windows_links_to_pdf_store_without_claiming_suite_is_available(self):
+        url = "https://apps.microsoft.com/detail/9PBWKBZRBJNR"
+        self.assertEqual(checked_pdf_store(url), url)
+        for bad in [url.replace("https:", "http:"), url + "?redirect=elsewhere", url.replace("9PBWKBZRBJNR", "OTHER"),
+                    url.replace("apps.microsoft.com", "apps.microsoft.com.evil")]:
+            with self.assertRaises(ValueError):
+                checked_pdf_store(bad)
+        for language, strings in load_locales().items():
+            content = (ROOT / "dist" / route(language, "home").lstrip("/") / "index.html").read_text()
+            parser = Links()
+            parser.feed(content)
+            card = next(attrs for _, attrs in parser.elements if attrs.get("id") == "download-windows")
+            self.assertEqual(card["data-download-label"], strings["PDF_STORE_PRIMARY"])
+            self.assertIn(url, parser.links)
+            self.assertIn(strings["PDF_STORE_DOWNLOAD"], content)
 
     def test_payment_links_reject_other_hosts_and_unsafe_urls(self):
         self.assertEqual(checked_url("https://buymeacoffee.com/alport", "buymeacoffee.com"), "https://buymeacoffee.com/alport")
