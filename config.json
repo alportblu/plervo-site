@@ -5,9 +5,9 @@
   "downloads": [
     {
       "platform": "macos",
-      "version": "0.1.0-alpha.5",
-      "url": "https://github.com/alportblu/plervo-pdf/releases/download/v0.1.0-alpha.5/plervo-suite-0.1.0-alpha.5-macos-aarch64.dmg",
-      "sha256": "4b113d8311ea8ff8f92abeaf1d94c436e0a486c6d826cfafd7edc873a0a87eec",
+      "version": "0.1.0-alpha.8",
+      "url": "https://github.com/alportblu/plervo-pdf/releases/download/v0.1.0-alpha.8/plervo-suite-0.1.0-alpha.8-macos-aarch64.dmg",
+      "sha256": "c4787e7332a713294e583c8d89eadc3958c3be7f377821b32398740897e28d29",
       "validated": true,
       "products": [
         "audio",
@@ -29,9 +29,9 @@
     },
     {
       "platform": "linux",
-      "version": "0.1.0-alpha.5",
-      "url": "https://github.com/alportblu/plervo-pdf/releases/download/v0.1.0-alpha.5/plervo-suite-0.1.0-alpha.5-linux-x86_64.deb",
-      "sha256": "c77259a8068643e2a6e31b0595a07e2380277cd191a2c4e4102b179c4796b5ad",
+      "version": "0.1.0-alpha.8",
+      "url": "https://github.com/alportblu/plervo-pdf/releases/download/v0.1.0-alpha.8/plervo-suite-0.1.0-alpha.8-linux-x86_64.deb",
+      "sha256": "75475f1aca6da01470667e77766019b2a55eae22d305cbbe53455f8b53040f59",
       "validated": true,
       "products": [
         "audio",
@@ -51,9 +51,9 @@
     },
     {
       "platform": "linux",
-      "version": "0.1.0-alpha.5",
-      "url": "https://github.com/alportblu/plervo-pdf/releases/download/v0.1.0-alpha.5/plervo-suite-0.1.0-alpha.5-linux-x86_64.rpm",
-      "sha256": "55c6246242b4d14ba1668e443405aa1c4feaa8c004eec488f3bed98e6378054e",
+      "version": "0.1.0-alpha.8",
+      "url": "https://github.com/alportblu/plervo-pdf/releases/download/v0.1.0-alpha.8/plervo-suite-0.1.0-alpha.8-linux-x86_64.rpm",
+      "sha256": "81398922f0363b9aba6aae22ce0c0dff5ab5075e43ede82f3cb43c9295c1154f",
       "validated": true,
       "products": [
         "audio",
@@ -72,6 +72,6 @@
       ]
     }
   ],
-  "release_url": "https://github.com/alportblu/plervo-pdf/releases/tag/v0.1.0-alpha.5",
+  "release_url": "https://github.com/alportblu/plervo-pdf/releases/tag/v0.1.0-alpha.8",
   "pdf_store_url": "https://apps.microsoft.com/detail/9PBWKBZRBJNR"
 }

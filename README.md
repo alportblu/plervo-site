@@ -25,7 +25,7 @@ The `Plervo site checks` workflow checks generation, links, download safeguards 
 
 ## Public downloads
 
-The main download is **Plervo Suite 0.1.0-alpha.5**, for Mac with Apple Silicon or Linux x86_64. Install the Suite first, then choose apps from its catalog. Apps are versioned independently: PDF has a separate alpha.7 security release for its newly qualified platforms; the other twelve apps use alpha.5 with visible optional Support actions in their headers. See the PDF release notes for exact platform availability.
+The main download is **Plervo Suite 0.1.0-alpha.8**, for Mac with Apple Silicon or Linux x86_64. Install the Suite first, then choose apps from its catalog. All thirteen apps have matching alpha.8 packages, with optional Support actions in their headers. Each package records its actual tested source commit and checksums in the release provenance.
 
 All 13 apps are available on both platforms: PDF, Photo, Vector, Video, Develop, Motion, Publish, Write, Slides, Sheets, CAD, Audio and Canvas. Slides and Audio have English-only interfaces in this alpha. Mac packages are signed and notarized. Linux offers DEB and RPM packages and requires glibc 2.39 or newer; the Suite's declared dependencies include ALSA for multimedia apps.
 
@@ -33,7 +33,9 @@ Plervo PDF is available free in [Microsoft Store](https://apps.microsoft.com/det
 
 Public app downloads are tested through the Suite's actual installation components in isolated destinations, including reinstallation. Linux also checks removal and preservation of synthetic files. Local Linux checks use emulated x86_64 containers in addition to native acceptance recorded in CI.
 
-This is an experimental alpha. Final Mac GUI acceptance, installation on a clean Mac, audio hardware, external plugins and wider device coverage remain outside the completed validation. See the [release notes](https://github.com/alportblu/plervo-pdf/releases/tag/v0.1.0-alpha.5) for current limits.
+This is an experimental alpha. Final Mac GUI acceptance, installation on a clean Mac, audio hardware, external plugins and wider device coverage remain outside the completed validation. See the [release notes](https://github.com/alportblu/plervo-pdf/releases/tag/v0.1.0-alpha.8) for current limits.
+
+Suite checks the official GitHub catalog at startup and every six hours while open. Settings can switch to manual checks. It shows all detected installed apps and offers newer app packages. A Suite update notice opens the matching official installer; the user installs it and reopens Suite. Existing alpha.5 users need one initial manual upgrade. No background service is installed, and apps are not silently replaced. The standalone PDF Help updater still discovers stable releases only; use Suite for alpha PDF updates on Mac/Linux. Windows PDF updates through Microsoft Store.
 
 ## Download configuration
 
@@ -52,6 +54,8 @@ Support, security, privacy, credits and 404 pages are translated. Legacy Portugu
 ## Security and optional support
 
 The security pages explain the [PDF alpha.7 redaction correction](https://github.com/alportblu/plervo-pdf/releases/tag/v0.1.0-alpha.7), the additional distribution notices and the need to review previously redacted files. Updating does not remove retained data from existing documents.
+
+Alpha.8 also updates affected ctutils and TLS trust dependencies, preserves full third-party notices and documents the existing scoped RSA advisory exceptions in PDF, Video and Develop. The reviewed static site and Rust app sources contain no PHP runtime; the October PHP advisories have no identified entry point in that scope. This is not a claim about unrelated infrastructure or the absence of vulnerabilities.
 
 The `/security/` page and its translations point to the private GitHub reporting channel enabled in `alportblu/plervo-pdf`. The site does not receive the reports' contents.
 
