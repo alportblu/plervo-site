@@ -29,7 +29,7 @@ The main download is **Plervo Suite 0.1.0-alpha.5**, for Mac with Apple Silicon 
 
 All 13 apps are available on both platforms: PDF, Photo, Vector, Video, Develop, Motion, Publish, Write, Slides, Sheets, CAD, Audio and Canvas. Slides and Audio have English-only interfaces in this alpha. Mac packages are signed and notarized. Linux offers DEB and RPM packages and requires glibc 2.39 or newer; the Suite's declared dependencies include ALSA for multimedia apps.
 
-Plervo PDF is available free in [Microsoft Store](https://apps.microsoft.com/detail/9PBWKBZRBJNR) for Windows 10/11 x64. Security update 1.0.6.0 has passed Microsoft certification; Store rollout controls when the corrected package reaches each device. The other Windows apps remain in preparation. Earlier internal candidates for all 13 apps passed native installation, repair/removal, representative command-line operations, and normal GUI startup/close checks.
+Plervo PDF is available free in [Microsoft Store](https://apps.microsoft.com/detail/9PBWKBZRBJNR) for Windows 10/11 x64. Security update 1.0.7.0 has passed Microsoft certification and Submission 3 is live; Store rollout controls when the corrected package reaches each device. The Windows download card links directly to this listing. The other Windows apps remain in preparation. Earlier internal candidates for all 13 apps passed native installation, repair/removal, representative command-line operations, and normal GUI startup/close checks.
 
 Public app downloads are tested through the Suite's actual installation components in isolated destinations, including reinstallation. Linux also checks removal and preservation of synthetic files. Local Linux checks use emulated x86_64 containers in addition to native acceptance recorded in CI.
 
