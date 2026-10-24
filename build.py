@@ -79,9 +79,10 @@ def checked_downloads(releases):
     return downloads
 
 
-def checked_pdf_store(value):
-    if value != "https://apps.microsoft.com/detail/9PBWKBZRBJNR":
-        raise ValueError("The PDF Store link must use its verified Microsoft product identity")
+def checked_store(value, product):
+    identities = {"pdf": "9PBWKBZRBJNR", "suite": "9P5P5QD5GDK1"}
+    if value != "https://apps.microsoft.com/detail/" + identities[product]:
+        raise ValueError("The Store link must use its verified Microsoft product identity")
     return checked_url(value, "apps.microsoft.com")
 
 
@@ -138,7 +139,8 @@ def main():
     source = checked_url(config["source_url"], "github.com")
     release_url = checked_url(config["release_url"], "github.com")
     downloads = checked_downloads(config["downloads"])
-    pdf_store = checked_pdf_store(config["pdf_store_url"])
+    pdf_store = checked_store(config["pdf_store_url"], "pdf")
+    suite_store = checked_store(config["suite_store_url"], "suite")
     locales = load_locales()
     dest = ROOT / "dist"
     if dest.exists():
@@ -165,9 +167,10 @@ def main():
             action = f'<span class="pending">{values[platform.upper() + "_PENDING"]}</span>'
             primary_label = ""
             if platform == "windows":
-                action = (f'<a class="button" href="{pdf_store}">{values["PDF_STORE_DOWNLOAD"]} ↗</a>'
-                          f'<span class="hash">Microsoft Store · {values["PDF_STORE_UPDATES"]}</span>')
-                primary_label = f' data-download-label="{values["PDF_STORE_PRIMARY"]}"'
+                action = (f'<a class="button" href="{suite_store}">{values["SUITE_STORE_DOWNLOAD"]} ↗</a>'
+                          f'<span class="hash">Microsoft Store · {values["STORE_UPDATES"]}</span>'
+                          f'<a class="text-link" href="{pdf_store}">{values["PDF_STORE_DOWNLOAD"]} ↗</a>')
+                primary_label = f' data-download-label="{values["SUITE_STORE_PRIMARY"]}"'
             if platform in downloads:
                 primary_label = ""
                 action = ""
