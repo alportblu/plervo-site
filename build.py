@@ -18,6 +18,13 @@ PLATFORMS = {"macos": "macOS", "windows": "Windows", "linux": "Linux"}
 PRODUCTS = {"photo": "Photo", "vector": "Vector", "video": "Video", "develop": "Develop",
             "motion": "Motion", "publish": "Publish", "write": "Write", "slides": "Slides",
             "sheets": "Sheets", "cad": "CAD", "audio": "Audio", "canvas": "Canvas"}
+STORE_IDENTITIES = {
+    "suite": "9P5P5QD5GDK1", "pdf": "9PBWKBZRBJNR", "cad": "9P5CZZSKKG1Q",
+    "video": "9NRKLM46BCDG", "photo": "9P5LZ60KSD8N", "vector": "9NMWZRJZHDDH",
+    "develop": "9PLTQ9RL45R3", "motion": "9NSG0HNRW1TF", "publish": "9N9D719Z3CLR",
+    "write": "9P3MPXHK0MWQ", "slides": "9PJP84C61W48", "sheets": "9NKPX3S5VQ4F",
+    "audio": "9PJ7F61RGP11", "canvas": "9N51C6Q611QS",
+}
 
 
 def route(language, page):
@@ -80,9 +87,7 @@ def checked_downloads(releases):
 
 
 def checked_store(value, product):
-    identities = {"pdf": "9PBWKBZRBJNR", "suite": "9P5P5QD5GDK1",
-                  "cad": "9P5CZZSKKG1Q", "video": "9NRKLM46BCDG"}
-    if value != "https://apps.microsoft.com/detail/" + identities[product]:
+    if product not in STORE_IDENTITIES or value != "https://apps.microsoft.com/detail/" + STORE_IDENTITIES[product]:
         raise ValueError("The Store link must use its verified Microsoft product identity")
     return checked_url(value, "apps.microsoft.com")
 
@@ -114,16 +119,22 @@ def versioned_asset(dest, filename):
     return "/" + target.relative_to(dest).as_posix()
 
 
-def product_cards(downloads, values, icon_urls):
+def product_cards(downloads, values, icon_urls, app_stores=None):
+    app_stores = app_stores or {}
     cards = []
     for product, name in PRODUCTS.items():
         platforms = [PLATFORMS[platform] for platform, releases in downloads.items()
                      if product in releases[0].get("products", ["pdf"])]
+        if product in app_stores and "Windows" not in platforms:
+            platforms.append("Windows")
         status = values["PRODUCT_TESTING"]
         action = ""
         if platforms:
             status = values["PRODUCT_ALPHA"] + " · " + " / ".join(platforms)
             action = f'<a class="text-link" href="#downloads">{values["PDF_ACTION"]} ↗</a>'
+        if product in app_stores:
+            store_url = checked_store(app_stores[product], product)
+            action += f'<a class="text-link" href="{store_url}">Microsoft Store ↗</a>'
         language = f'<p class="product-language">{values["PRODUCT_ENGLISH_ONLY"]}</p>' if product in ("slides", "audio") else ""
         cards.append(f'<article class="product-card" id="app-{product}">'
                      f'<img src="{icon_urls[product]}" width="56" height="56" alt="" loading="lazy">'
@@ -143,7 +154,7 @@ def main():
     pdf_store = checked_store(config["pdf_store_url"], "pdf")
     suite_store = checked_store(config["suite_store_url"], "suite")
     app_stores = {product: checked_store(config[product + "_store_url"], product)
-                  for product in ("cad", "video")}
+                  for product in PRODUCTS if product + "_store_url" in config}
     locales = load_locales()
     dest = ROOT / "dist"
     if dest.exists():
@@ -164,7 +175,7 @@ def main():
         values.update({key.upper() + "_URL": route(language, key) for key in ROUTES[language]})
         values.update(DONATION_URL=donation, SOURCE_URL=source, RELEASE_URL=release_url)
         values.update(assets)
-        values["PRODUCT_CARDS"] = product_cards(downloads, values, icons)
+        values["PRODUCT_CARDS"] = product_cards(downloads, values, icons, app_stores)
         cards = []
         for platform, label in PLATFORMS.items():
             action = f'<span class="pending">{values[platform.upper() + "_PENDING"]}</span>'

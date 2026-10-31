@@ -76,5 +76,15 @@
   "pdf_store_url": "https://apps.microsoft.com/detail/9PBWKBZRBJNR",
   "suite_store_url": "https://apps.microsoft.com/detail/9P5P5QD5GDK1",
   "cad_store_url": "https://apps.microsoft.com/detail/9P5CZZSKKG1Q",
-  "video_store_url": "https://apps.microsoft.com/detail/9NRKLM46BCDG"
+  "video_store_url": "https://apps.microsoft.com/detail/9NRKLM46BCDG",
+  "photo_store_url": "https://apps.microsoft.com/detail/9P5LZ60KSD8N",
+  "vector_store_url": "https://apps.microsoft.com/detail/9NMWZRJZHDDH",
+  "develop_store_url": "https://apps.microsoft.com/detail/9PLTQ9RL45R3",
+  "motion_store_url": "https://apps.microsoft.com/detail/9NSG0HNRW1TF",
+  "publish_store_url": "https://apps.microsoft.com/detail/9N9D719Z3CLR",
+  "write_store_url": "https://apps.microsoft.com/detail/9P3MPXHK0MWQ",
+  "slides_store_url": "https://apps.microsoft.com/detail/9PJP84C61W48",
+  "sheets_store_url": "https://apps.microsoft.com/detail/9NKPX3S5VQ4F",
+  "audio_store_url": "https://apps.microsoft.com/detail/9PJ7F61RGP11",
+  "canvas_store_url": "https://apps.microsoft.com/detail/9N51C6Q611QS"
 }
