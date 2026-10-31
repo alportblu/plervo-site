@@ -7,7 +7,7 @@ import unittest
 from unittest.mock import patch
 from urllib.parse import urlsplit
 
-from build import LANGUAGES, ROUTES, ROOT, PRODUCTS, checked_downloads, checked_store, checked_url, load_locales, main, product_cards, route
+from build import LANGUAGES, ROUTES, ROOT, PRODUCTS, STORE_IDENTITIES, checked_downloads, checked_store, checked_url, load_locales, main, product_cards, route
 
 
 class Links(HTMLParser):
@@ -34,10 +34,8 @@ class SiteTests(unittest.TestCase):
         main()
 
     def test_windows_offers_suite_store_first_and_preserves_direct_pdf_link(self):
-        urls = {"suite": "https://apps.microsoft.com/detail/9P5P5QD5GDK1",
-                "pdf": "https://apps.microsoft.com/detail/9PBWKBZRBJNR",
-                "cad": "https://apps.microsoft.com/detail/9P5CZZSKKG1Q",
-                "video": "https://apps.microsoft.com/detail/9NRKLM46BCDG"}
+        config = json.loads((ROOT / "config.json").read_text())
+        urls = {product: config[product + "_store_url"] for product in STORE_IDENTITIES}
         for product, url in urls.items():
             self.assertEqual(checked_store(url, product), url)
             for bad in [url.replace("https:", "http:"), url + "?redirect=elsewhere",
@@ -53,9 +51,15 @@ class SiteTests(unittest.TestCase):
             self.assertEqual(card["data-download-label"], strings["SUITE_STORE_PRIMARY"])
             windows = Links()
             windows.feed(content.split('id="download-windows"', 1)[1].split('</article>', 1)[0])
-            self.assertEqual(windows.links, [urls["suite"], urls["pdf"], urls["cad"], urls["video"]])
+            self.assertEqual(windows.links, [urls["suite"], urls["pdf"], *(urls[product] for product in PRODUCTS)])
             self.assertIn(strings["SUITE_STORE_DOWNLOAD"], content)
             self.assertIn(strings["PDF_STORE_DOWNLOAD"], content)
+            for product in PRODUCTS:
+                app = content.split(f'id="app-{product}"', 1)[1].split('</article>', 1)[0]
+                self.assertIn('Windows', app)
+                self.assertIn(f'href="{urls[product]}"', app)
+        with self.assertRaises(ValueError):
+            checked_store(urls["suite"], "unknown-app")
 
     def test_payment_links_reject_other_hosts_and_unsafe_urls(self):
         self.assertEqual(checked_url("https://buymeacoffee.com/alport", "buymeacoffee.com"), "https://buymeacoffee.com/alport")
