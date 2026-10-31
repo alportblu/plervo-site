@@ -80,7 +80,8 @@ def checked_downloads(releases):
 
 
 def checked_store(value, product):
-    identities = {"pdf": "9PBWKBZRBJNR", "suite": "9P5P5QD5GDK1"}
+    identities = {"pdf": "9PBWKBZRBJNR", "suite": "9P5P5QD5GDK1",
+                  "cad": "9P5CZZSKKG1Q", "video": "9NRKLM46BCDG"}
     if value != "https://apps.microsoft.com/detail/" + identities[product]:
         raise ValueError("The Store link must use its verified Microsoft product identity")
     return checked_url(value, "apps.microsoft.com")
@@ -141,6 +142,8 @@ def main():
     downloads = checked_downloads(config["downloads"])
     pdf_store = checked_store(config["pdf_store_url"], "pdf")
     suite_store = checked_store(config["suite_store_url"], "suite")
+    app_stores = {product: checked_store(config[product + "_store_url"], product)
+                  for product in ("cad", "video")}
     locales = load_locales()
     dest = ROOT / "dist"
     if dest.exists():
@@ -170,6 +173,8 @@ def main():
                 action = (f'<a class="button" href="{suite_store}">{values["SUITE_STORE_DOWNLOAD"]} ↗</a>'
                           f'<span class="hash">Microsoft Store · {values["STORE_UPDATES"]}</span>'
                           f'<a class="text-link" href="{pdf_store}">{values["PDF_STORE_DOWNLOAD"]} ↗</a>')
+                action += "".join(f'<a class="text-link" href="{url}">Plervo {PRODUCTS[product]} · Microsoft Store ↗</a>'
+                                  for product, url in app_stores.items())
                 primary_label = f' data-download-label="{values["SUITE_STORE_PRIMARY"]}"'
             if platform in downloads:
                 primary_label = ""

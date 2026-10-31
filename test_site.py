@@ -35,7 +35,9 @@ class SiteTests(unittest.TestCase):
 
     def test_windows_offers_suite_store_first_and_preserves_direct_pdf_link(self):
         urls = {"suite": "https://apps.microsoft.com/detail/9P5P5QD5GDK1",
-                "pdf": "https://apps.microsoft.com/detail/9PBWKBZRBJNR"}
+                "pdf": "https://apps.microsoft.com/detail/9PBWKBZRBJNR",
+                "cad": "https://apps.microsoft.com/detail/9P5CZZSKKG1Q",
+                "video": "https://apps.microsoft.com/detail/9NRKLM46BCDG"}
         for product, url in urls.items():
             self.assertEqual(checked_store(url, product), url)
             for bad in [url.replace("https:", "http:"), url + "?redirect=elsewhere",
@@ -51,7 +53,7 @@ class SiteTests(unittest.TestCase):
             self.assertEqual(card["data-download-label"], strings["SUITE_STORE_PRIMARY"])
             windows = Links()
             windows.feed(content.split('id="download-windows"', 1)[1].split('</article>', 1)[0])
-            self.assertEqual(windows.links, [urls["suite"], urls["pdf"]])
+            self.assertEqual(windows.links, [urls["suite"], urls["pdf"], urls["cad"], urls["video"]])
             self.assertIn(strings["SUITE_STORE_DOWNLOAD"], content)
             self.assertIn(strings["PDF_STORE_DOWNLOAD"], content)
 

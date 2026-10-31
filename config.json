@@ -74,5 +74,7 @@
   ],
   "release_url": "https://github.com/alportblu/plervo-pdf/releases/tag/v0.1.0-alpha.8",
   "pdf_store_url": "https://apps.microsoft.com/detail/9PBWKBZRBJNR",
-  "suite_store_url": "https://apps.microsoft.com/detail/9P5P5QD5GDK1"
+  "suite_store_url": "https://apps.microsoft.com/detail/9P5P5QD5GDK1",
+  "cad_store_url": "https://apps.microsoft.com/detail/9P5CZZSKKG1Q",
+  "video_store_url": "https://apps.microsoft.com/detail/9NRKLM46BCDG"
 }
